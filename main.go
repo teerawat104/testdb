@@ -30,13 +30,19 @@ func main() {
 	fmt.Println("connect success")
 
 	defer db.Close()
+	read(db)
+
+}
+
+func read(db *sql.DB) []UserData {
 
 	results, _ := db.Query("SELECT * FROM user") // result จะ return ออกมาเป็น struc เราต้องทำ struc มารองรับ
 
+	var userDataList []UserData
 	for results.Next() {
 		var userData UserData
 
-		err = results.Scan(
+		err := results.Scan(
 			&userData.Id,
 			&userData.CitizenId,
 			&userData.FirstName,
@@ -54,6 +60,10 @@ func main() {
 			panic(err.Error())
 		}
 
-		fmt.Println(userData)
+		userDataList = append(userDataList, userData)
+		fmt.Println(userDataList)
+
 	}
+	return userDataList
+
 }
